@@ -16,7 +16,8 @@ import {
   userAllOrders,
   placeOrder,
 } from "../../User/controllers/orderController.js";
-import { authenticateUser } from "../../middleware/authMiddleware.js";
+
+import { authenticateUser, isAdmin } from "../../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -25,14 +26,24 @@ router.post("/userSignup", userSignup);
 router.post("/signin", signin);
 
 // Cart routes
-router.post("/addToCart", authenticateUser, addToCart);
-router.delete("/deleteFromCart/:productId", authenticateUser, deleteFromCart);
-router.post("/updateCartQuantity", authenticateUser, updateCartQuantity);
-router.get("/getCart/:userId", authenticateUser, getCart);
-router.delete("/removeAllProducts/:userId", authenticateUser, getCart);
+router.post("/addToCart", authenticateUser, isAdmin, addToCart);
+router.delete(
+  "/deleteFromCart/:productId",
+  authenticateUser,
+  isAdmin,
+  deleteFromCart
+);
+router.post(
+  "/updateCartQuantity",
+  authenticateUser,
+  isAdmin,
+  updateCartQuantity
+);
+router.get("/getCart/:userId", authenticateUser, isAdmin, getCart);
+router.delete("/removeAllProducts/:userId", authenticateUser, isAdmin, getCart);
 
 // Placed/Order routes For Customer
-router.get("/userAllOrders/:userId", authenticateUser, userAllOrders);
-router.post("/placeOrder", authenticateUser, placeOrder);
+router.get("/userAllOrders/:userId", authenticateUser, isAdmin, userAllOrders);
+router.post("/placeOrder", authenticateUser, isAdmin, placeOrder);
 
 export default router;
